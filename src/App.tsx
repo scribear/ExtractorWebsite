@@ -1,22 +1,28 @@
 import React from 'react';
 import logo from './logo.svg';
-import fetch from 'node-fetch';
+// import fetch from 'node-fetch';
 import './App.css';
 
 function App() {
+  const [subjectName, setSubjectName] = React.useState('');
+  
   const checkExist = async () => {
     console.log("submitted!");
-    const response = await fetch('https://api.github.com/');
-    // const body = await response.text();
-
-    // console.log(body);
+    console.log(document.getElementById("subjectName")!.innerHTML.valueOf());
   }
+
+  const onInputChange = (event: { target: { value: React.SetStateAction<string>; }; }) => {
+    setSubjectName(event.target.value);
+    // console.log(document.getElementById("subjectName")!.value);
+  }
+
+  console.log('subjectName: ', subjectName);
 
   return (
     <div className="App">
       <form onSubmit={checkExist}>
         <label htmlFor="subjectName">Subject Name: </label>
-        <input type="text" id="subjectName" name="subjectName"></input><br></br>
+        <input type="text" id="subjectName" name="subjectName" onChange={onInputChange} value={subjectName}></input><br></br>
         <label htmlFor = "wordPdf"> Choose PDF File: </label>
         <input type = "file"
                id = "wordPdf" name = "wordPdf"
@@ -27,23 +33,6 @@ function App() {
       </form>
 
 
-
-
-      {/* <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header> */}
     </div>
   );
 }
