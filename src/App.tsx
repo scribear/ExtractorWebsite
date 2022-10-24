@@ -1,10 +1,10 @@
 import React from 'react';
 import logo from './logo.svg';
-// import fetch from 'node-fetch';
 import './App.css';
 
 function App() {
   const [subjectName, setSubjectName] = React.useState('');
+  const [selectedFile, setSelectedFile] = React.useState(File);
   
   const checkExist = async () => {
     console.log("submitted!");
@@ -16,6 +16,16 @@ function App() {
     // console.log(document.getElementById("subjectName")!.value);
   }
 
+  function handleChange(event: { target: {value: React.SetStateAction<File>; }; }) {
+    setSelectedFile(event.target.value)
+  }
+
+  // const submitForm = () => {
+  //   const formData = new FormData();
+  //   formData.append("name", subjectName);
+  //   formData.append("file", selectedFile);
+  // };
+
   console.log('subjectName: ', subjectName);
 
   return (
@@ -24,11 +34,9 @@ function App() {
         <label htmlFor="subjectName">Subject Name: </label>
         <input type="text" id="subjectName" name="subjectName" onChange={onInputChange} value={subjectName}></input><br></br>
         <label htmlFor = "wordPdf"> Choose PDF File: </label>
-        <input type = "file"
+        <input type = "file" onChange={handleChange}
                id = "wordPdf" name = "wordPdf"
                accept = "image/pdf"></input> <br></br>
-        {/* <label htmlFor="wordPdf">PDF: </label>
-        <input type="image" id="wordPdf" name="wordPdf"></input><br></br> */}
         <input type="submit" value="Upload"></input>
       </form>
 
