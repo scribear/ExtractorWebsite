@@ -2,6 +2,9 @@ import React from 'react';
 import logo from './logo.svg';
 import './App.css';
 
+
+import pdfjsLib from 'pdfjs-dist';
+
 function App() {
   const [subjectName, setSubjectName] = React.useState('');
   // const [selectedFile, setSelectedFile] = React.useState(File);
@@ -39,16 +42,16 @@ function App() {
 
         // write pdf file to filaname
         const fs = require('fs');
-        fs.writeFile('filename.pdf', reader.result, (err: any) => {
-          if (err) throw err;
-          console.log('The file has been saved!');
-        });
+        // fs.writeFile('filename.pdf', reader.result, (err: any) => {
+        //   if (err) throw err;
+        //   console.log('The file has been saved!');
+        // });
       }
     }
     console.log(34, event.target.files[0]);
 
-    // reader.readAsDataURL(event.target.files[0]);
-    reader.readAsText(event.target.files[0]);
+    reader.readAsDataURL(event.target.files[0]);
+    // reader.readAsText(event.target.files[0]);
 
     
   }
