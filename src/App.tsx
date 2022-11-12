@@ -2,9 +2,6 @@ import React from 'react';
 import logo from './logo.svg';
 import './App.css';
 
-
-import pdfjsLib from 'pdfjs-dist';
-
 function App() {
   const [subjectName, setSubjectName] = React.useState('');
   // const [selectedFile, setSelectedFile] = React.useState(File);
