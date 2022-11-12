@@ -4,11 +4,14 @@ import './App.css';
 
 function App() {
   const [subjectName, setSubjectName] = React.useState('');
-  // const [selectedFile, setSelectedFile] = React.useState(File);
+  // This will serve as a boolean that determines the user view
+  const [currentPageView, setCurrentPageView] = React.useState<number>(0);
   
   const onSubmit = async () => {
     console.log("submitted!");
     console.log(document.getElementById("subjectName")!.innerHTML.valueOf());
+    setCurrentPageView(1);
+    console.log(currentPageView);
   }
 
   const onInputChange = (event: { target: { value: React.SetStateAction<string>; }; }) => {
@@ -58,7 +61,7 @@ function App() {
 
   return (
     <div className="App">
-      <form onSubmit={onSubmit}>
+      <form onSubmit={onSubmit} className="Upload-buttons">
         <label htmlFor="subjectName">Subject Name: </label>
         <input type="text" id="subjectName" name="subjectName" onChange={onInputChange} value={subjectName}></input><br></br>
         <label htmlFor = "wordPdf"> Choose PDF File: </label>

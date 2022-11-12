@@ -28,6 +28,10 @@
   color: #61dafb;
 }
 
+.Upload-buttons {
+  padding-top: 0px;
+}
+
 @keyframes App-logo-spin {
   from {
     transform: rotate(0deg);
