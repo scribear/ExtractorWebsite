@@ -16,7 +16,6 @@ function App() {
 
   const onInputChange = (event: { target: { value: React.SetStateAction<string>; }; }) => {
     setSubjectName(event.target.value);
-    // console.log(document.getElementById("subjectName")!.value);
   }
 
   function onFileChange(event: { target: { files: any; }; }) {
@@ -51,29 +50,41 @@ function App() {
     console.log(34, event.target.files[0]);
 
     reader.readAsDataURL(event.target.files[0]);
-    // reader.readAsText(event.target.files[0]);
-
-    
   }
 
-
-  // console.log('subjectName: ', subjectName);
-
-  return (
-    <div className="App">
-      <form onSubmit={onSubmit} className="Upload-buttons">
-        <label htmlFor="subjectName">Subject Name: </label>
-        <input type="text" id="subjectName" name="subjectName" onChange={onInputChange} value={subjectName}></input><br></br>
-        <label htmlFor = "wordPdf"> Choose PDF File: </label>
-        <input type = "file" onChange={onFileChange}
-               id = "wordPdf" name = "wordPdf"
-               accept = "image/pdf"></input> <br></br>
-        <input type="submit" value="Upload"></input>
-      </form>
-
-      <img src="" id="uploaded_pdf"/>
-    </div>
-  );
+  if (currentPageView == 0) {
+    return (
+      <div className="App">
+        <div className="Upload-buttons">
+          <label htmlFor="subjectName">Subject Name: </label>
+          <input type="text" id="subjectName" name="subjectName" onChange={onInputChange} value={subjectName}></input><br></br>
+          <label htmlFor = "wordPdf"> Choose PDF File: </label>
+          <input type = "file" onChange={onFileChange}
+                 id = "wordPdf" name = "wordPdf"
+                 accept = "image/pdf"></input> <br></br>
+          <input type="submit" onClick={onSubmit} value="Upload"></input>
+        </div>
+  
+        <img src="" id="uploaded_pdf"/>
+      </div>
+    );
+  } else {
+    return (
+      <div className="App">
+        <form onSubmit={onSubmit} className="Upload-buttons">
+          <label htmlFor="subjectName">Subject Name: </label>
+          <input type="text" id="subjectName" name="subjectName" onChange={onInputChange} value={subjectName}></input><br></br>
+          <label htmlFor = "wordPdf"> Choose PDF File: </label>
+          <input type = "file" onChange={onFileChange}
+                 id = "wordPdf" name = "wordPdf"
+                 accept = "image/pdf"></input> <br></br>
+          <input type="submit" value="Upload"></input>
+        </form>
+  
+        <img src="" id="uploaded_pdf"/>
+      </div>
+    );
+  }
 }
 
 export default App;
