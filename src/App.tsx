@@ -12,7 +12,7 @@ function App() {
   }
 
   const onInputChange = (event: { target: { value: React.SetStateAction<string>; }; }) => {
-    // setSubjectName(event.target.value);
+    setSubjectName(event.target.value);
     // console.log(document.getElementById("subjectName")!.value);
   }
 
