@@ -1,6 +1,6 @@
 import React from 'react';
-import logo from './logo.svg';
 import './App.css';
+import {convert} from "./pdfParser";
 
 function App() {
   const [subjectName, setSubjectName] = React.useState('');
@@ -40,7 +40,7 @@ function App() {
         document.querySelector('#uploaded_pdf')!.setAttribute('src', file);
 
         // write pdf file to filaname
-        const fs = require('fs');
+        // const fs = require('fs');
         // fs.writeFile('filename.pdf', reader.result, (err: any) => {
         //   if (err) throw err;
         //   console.log('The file has been saved!');
@@ -52,7 +52,7 @@ function App() {
     reader.readAsDataURL(event.target.files[0]);
   }
 
-  if (currentPageView == 0) {
+  if (currentPageView === 0) {
     return (
       <div className="App">
         <div className="Upload-buttons">
@@ -63,7 +63,10 @@ function App() {
                  id = "wordPdf" name = "wordPdf"
                  accept = "image/pdf"></input> <br></br>
           <input type="submit" onClick={onSubmit} value="Upload"></input>
-        </div>
+          <input id="pdffile" name="pdffile" type="file" />
+          <button id="btn" onClick= {convert}>Process</button>
+          <div id="result"></div>
+        </div>``
   
         <img src="" id="uploaded_pdf"/>
       </div>

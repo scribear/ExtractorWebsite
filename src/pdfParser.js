@@ -1,9 +1,12 @@
 import pdfjsLib from 'pdfjs-dist';
 // import { GetDocumentParameters } from 'pdfjs-dist/types/src/display/api';
 
-document.getElementById('btn').addEventListener('click', convert);
+if (document.getElementById('btn') != null) {
+    document.getElementById('btn').addEventListener('click', convert);
+}
 
 export const convert = () => {
+    console.log(document.getElementById('btn'));
     let fr = new FileReader();
     let pdff = Pdf2TextClass();
     fr.onload = () => {
