@@ -1,4 +1,4 @@
-import pdfjsLib from 'pdfjs-dist';
+import pdfjsLib from 'pdfjs-dist'
 // import { GetDocumentParameters } from 'pdfjs-dist/types/src/display/api';
 
 if (document.getElementById('btn') != null) {
@@ -16,7 +16,7 @@ export const convert = () => {
     
 }
 
-export const Pdf2TextClass = () => {
+export function Pdf2TextClass() {
     let self = this;
     this.complete = 0;
 
