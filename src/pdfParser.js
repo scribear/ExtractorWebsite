@@ -8,19 +8,18 @@ if (document.getElementById('btn') != null) {
 export const convert = () => {
     console.log(document.getElementById('btn'));
     let fr = new FileReader();
-    let pdff = Pdf2TextClass();
+    let pdfToText = Pdf2TextClass();
     fr.onload = () => {
-        pdff.pdfToText(fr.result, null, (text) => { document.getElementById('result').innerText += text; });
+        pdfToText(fr.result, null, (text) => { document.getElementById('result').innerText += text; });
     }
     fr.readAsDataURL(document.getElementById('pdffile').files[0])
     
 }
 
 export function Pdf2TextClass() {
-    let self = this;
-    this.complete = 0;
+    let complete = 0;
 
-    this.pdfToText = (data, callbackPageDone, callbackAllDone) => {
+    return (data, callbackPageDone, callbackAllDone) => {
         console.assert(data instanceof ArrayBuffer || typeof data == 'string');
         var loadingTask = pdfjsLib.getDocument(data);
         loadingTask.promise.then(function (pdf) {
@@ -53,9 +52,9 @@ export function Pdf2TextClass() {
                             textContent != null && console.log("page " + n + " finished."); //" content: \n" + page_text);
                             layers[n] = page_text + "\n\n";
                         }
-                        ++self.complete;
+                        ++complete;
                         //callbackPageDone( self.complete, total );
-                        if (self.complete == total) {
+                        if (complete == total) {
                             window.setTimeout(function () {
                                 var full_text = "";
                                 var num_pages = Object.keys(layers).length;
