@@ -2,6 +2,9 @@
     <head>
         <script src="https://npmcdn.com/pdfjs-dist/build/pdf.js"></script>
     </head>
+    Input class name (i.e. CS225)
+    <input id="classname" name = "classname" type="string"/>
+    <br>
     <body>
         <input id="pdffile" name="pdffile" type="file" />
         <button id="btn" onclick="convert()">Process</button>
@@ -13,15 +16,37 @@
 <script>
     // import pdfjsLib from 'pdfjs-dist';
     // document.getElementById('btn').addEventListener('click', convert);
+    const setWords = new Set();
+
+    function isNumber(char) {
+        return /^\d$/.test(char);
+    }
 
     function convert() {
         var fr=new FileReader();
         var pdff = new Pdf2TextClass();
+        //why do we NEED the fr.onload function to run the inner bit of code?
         fr.onload=function(){
+            //output is stored in result
             pdff.pdfToText(fr.result, null, (text) => { document.getElementById('result').innerText += text; });
         }
+        //why doesn't the order matter?
         fr.readAsDataURL(document.getElementById('pdffile').files[0])
-        
+
+        console.log(document.getElementById('result').innerText)
+        let outstring = "";
+        for (let i = 0; i < document.getElementById('result').innerText.length; i++) {
+            if (!isNumber(document.getElementById('result').innerText[i])) {
+                outstring += document.getElementById('result').innerText[i]
+            } else {
+                //console.log(outstring)
+                if (outstring.length > 2) {
+                    setWords.add(outstring.trim())
+                }
+                outstring = "";
+            }
+        }
+        console.log(setWords)
     }
 
     function Pdf2TextClass() {
@@ -59,7 +84,7 @@
                                 }
 
                                 textContent != null && console.log("page " + n + " finished."); //" content: \n" + page_text);
-                                layers[n] = page_text + "\n\n";
+                                layers[n] = page_text + "\n";
                             }
                             ++self.complete;
                             //callbackPageDone( self.complete, total );
