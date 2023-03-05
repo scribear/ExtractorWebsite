@@ -1,6 +1,7 @@
 <html>
     <head>
         <script src="https://npmcdn.com/pdfjs-dist/build/pdf.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
     </head>
     Input class name (i.e. CS225)
     <input id="classname" name = "classname" type="string"/>
@@ -47,6 +48,7 @@
             }
         }
         console.log(setWords)
+        createTxtFile(setWords)
     }
 
     function Pdf2TextClass() {
@@ -103,5 +105,73 @@
             });
         }; // end of pdfToText()
     }; // end of class
+
+    function createTxtFile(text) {
+        var className = document.getElementById("classname").value;
+        var blob = new Blob([text],
+                { type: "text/plain;charset=utf-8" });
+                saveAs(blob, className + ".txt");
+    }
+    
+    async function uploadFile(filePath, repo, owner, branch, token) {
+        
+        // Read the contents of the file
+        const content = fs.readFileSync(filePath, "utf-8");
+        
+        // Encode the contents of the file as a base64 string
+        // const encodedContent = Buffer.from(content).toString("base64");
+
+        // Get the SHA of the latest commit on the branch
+        const latestCommitResponse = await axios.get(
+            `https://api.github.com/repos/${owner}/${repo}/git/refs/heads/${branch}`,
+            { headers: { Authorization: `Token ${token}` } }
+        );
+        const latestCommitSha = latestCommitResponse.data.object.sha;
+
+        // Create a new tree with the file
+        const newTreeResponse = await axios.post(
+            `https://api.github.com/repos/${owner}/${repo}/git/trees`,
+            {
+            base_tree: latestCommitSha,
+            tree: [
+                {
+                path: filePath,
+                mode: "100644",
+                type: "blob",
+                content: content
+                }
+            ]
+            },
+            { headers: { Authorization: `Token ${token}` } }
+        );
+        const newTreeSha = newTreeResponse.data.sha;
+
+        // Create a new commit with the new tree
+        const newCommitResponse = await axios.post(
+            `https://api.github.com/repos/${owner}/${repo}/git/commits`,
+            {
+            message: "Add file",
+            tree: newTreeSha,
+            parents: [latestCommitSha]
+            },
+            { headers: { Authorization: `Token ${token}` } }
+        );
+        const newCommitSha = newCommitResponse.data.sha;
+
+        // Update the branch to point to the new commit
+        await axios.patch(
+            `https://api.github.com/repos/${owner}/${repo}/git/refs/heads/${branch}`,
+            { sha: newCommitSha },
+            { headers: { Authorization: `Token ${token}` } }
+        );
+    }
+
+    // uploadFile(
+    // "Ayan.txt",
+    // "Tester",
+    // "highheat4",
+    // "main",
+    // "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"
+    // );
 
 </script>

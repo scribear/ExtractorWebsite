@@ -2,6 +2,42 @@ import React from 'react';
 import './App.css';
 import {convert} from "./pdfParser";
 
+const { Octokit } = require("@octokit/rest");
+// const fs = require("fs");
+
+async function uploadFile(owner: any, repo: any, path: any, content: any) {
+  const octokit = new Octokit({
+    auth: "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"
+  });
+
+  // const base64Content = Buffer.from(content).toString("base64");
+  const base64Content = content;
+
+  const response = await octokit.repos.createOrUpdateFileContents({
+    owner,
+    repo,
+    path,
+    message: "Uploading a file using Octokit",
+    content: base64Content,
+    branch: "main"
+  });
+
+  console.log(response.data);
+}
+
+// const content = fs.readFileSync("/defaultPDF.pdf", "utf-8");
+const content = "test github action"
+uploadFile("JoniLi99", "DomainWordExtractor", "/defaultPDF.pdf", content);
+console.log(content);
+
+
+
+
+
+
+
+
+
 function App() {
   const [subjectName, setSubjectName] = React.useState('');
   // This will serve as a boolean that determines the user view
