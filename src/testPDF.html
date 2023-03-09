@@ -12,43 +12,57 @@
         <div id="result"></div>
     </body>
 </html>
-
-
+​
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+​
 <script>
     // import pdfjsLib from 'pdfjs-dist';
     // document.getElementById('btn').addEventListener('click', convert);
     const setWords = new Set();
-
     function isNumber(char) {
         return /^\d$/.test(char);
     }
-
     function convert() {
         var fr=new FileReader();
         var pdff = new Pdf2TextClass();
+        var entire_text = "";
         //why do we NEED the fr.onload function to run the inner bit of code?
         fr.onload=function(){
             //output is stored in result
-            pdff.pdfToText(fr.result, null, (text) => { document.getElementById('result').innerText += text; });
+            pdff.pdfToText(fr.result, null, (text) => { 
+                entire_text += text;
+                document.getElementById('result').innerText += text;
+                
+                let tempString = "";
+                for (let i = 0; i < entire_text.length; i++) {
+                    if (!isNumber(entire_text[i])) {
+                        tempString += entire_text[i]
+                    } else {
+                        //console.log(tempString)
+                        if (tempString.length > 2) {
+                            setWords.add(tempString.trim())
+                            tempString = "";
+                        }
+                    }
+                }
+               
+                const outString = JSON.stringify(Array.from(setWords));
+                uploadFile(
+                    outString,
+                    "DomainWordExtractor",
+                    "JoniLi99",
+                    "main",
+                    "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"
+                )
+                console.log(outString)
+                createTxtFile(outString) 
+            });
         }
         //why doesn't the order matter?
         fr.readAsDataURL(document.getElementById('pdffile').files[0])
 
         console.log(document.getElementById('result').innerText)
-        let outstring = "";
-        for (let i = 0; i < document.getElementById('result').innerText.length; i++) {
-            if (!isNumber(document.getElementById('result').innerText[i])) {
-                outstring += document.getElementById('result').innerText[i]
-            } else {
-                //console.log(outstring)
-                if (outstring.length > 2) {
-                    setWords.add(outstring.trim())
-                }
-                outstring = "";
-            }
-        }
-        console.log(setWords)
-        createTxtFile(setWords)
+        
     }
 
     function Pdf2TextClass() {
@@ -113,13 +127,11 @@
                 saveAs(blob, className + ".txt");
     }
     
-    async function uploadFile(filePath, repo, owner, branch, token) {
-        
-        // Read the contents of the file
-        const content = fs.readFileSync(filePath, "utf-8");
+    async function uploadFile(content, repo, owner, branch, token) {
         
         // Encode the contents of the file as a base64 string
         // const encodedContent = Buffer.from(content).toString("base64");
+        console.log("isaac", content)
 
         // Get the SHA of the latest commit on the branch
         const latestCommitResponse = await axios.get(
@@ -135,7 +147,7 @@
             base_tree: latestCommitSha,
             tree: [
                 {
-                path: filePath,
+                path: "Joni.txt",
                 mode: "100644",
                 type: "blob",
                 content: content
