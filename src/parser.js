@@ -1,7 +1,7 @@
 // import { text } from "stream/consumers";
 
 const setWords = new Set();
-var debug1, debug2, debug3;
+let debug1, debug2, debug3;
 
 function isNumber(char) {
     return /^\d$/.test(char);
@@ -16,7 +16,7 @@ function convert() {
         //output is stored in result
         pdfToWords(fr.result, () => {}, (words) => { 
             words.map(word => setWords.add(word))
-            display_text = words.join('\n')
+            const display_text = Array.from(setWords).sort().join("\n")
             console.log(display_text)
             document.getElementById('result').innerText = display_text;
             
@@ -74,18 +74,22 @@ function textContentToWords(textContent) {
         return []
     }
     let words = []
-    // We assume here that an entry in the index has the format 'word word, page number' 
-    const entry_regex = new RegExp(/.*[a-zA-Z]+.*,.*/) // comma with 1+ alphabetical character somewhere before it
-    const word_regex = new RegExp(/.*?(?=,)/) // substring before the 1st comma
-    const brackets_regex = new RegExp(/\(.*?\)/) // a pair of brackets and whatever is in between them
+    // We assume here that an entry in the index has the format 'word, page number'
+    // space separated words containing only latin character and ' - ( )
+    const word_regex = new RegExp(/(\s*([^\d\s\W]|['-\(\)])+\s*)+/)
+    // a pair of brackets and arbitray string in between them
+    const brackets_regex = new RegExp(/\(.*?\)/g)
+    // 1+ contiguous spaces
+    const spaces_regex = new RegExp(/\s+/g)
     for (const text_block of textContent.items) {
         const text = text_block.str
-        if (!entry_regex.test(text)) {
+        if (text.search(word_regex) == -1) {
             continue
         }
         let word = text.match(word_regex)[0]
         // TODO: remove extra spaces around brackets
-        word.replace(brackets_regex, "") // remove brackets
+        word = word.replaceAll(brackets_regex, "") // remove brackets
+        word = word.replaceAll(spaces_regex, " ") // replace multiple spaces with single space
         word = word.trim()
         words.push(word)
     }
