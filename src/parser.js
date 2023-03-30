@@ -8,11 +8,13 @@ function isNumber(char) {
 function convert() {
     let fr = new FileReader();
     let entire_text = "";
+    console.debug("Start converting...")
 
-    //why do we NEED the fr.onload function to run the inner bit of code?
-    fr.onload=function(){
+    fr.readAsDataURL(document.getElementById('pdfFile').files[0])
+    fr.onload = function(){ // this function is executed asynchronously when the pdf file has been loaded 
         //output is stored in result
-        pdfToText(fr.result, null, (text) => { 
+        pdfToText(fr.result, () => {}, (text) => { 
+            console.log(text)
             entire_text += text;
             document.getElementById('result').innerText += text;
             
@@ -30,19 +32,17 @@ function convert() {
             }
             
             const outString = JSON.stringify(Array.from(setWords));
-            uploadFile(
-                outString,
-                "DomainWordExtractor",
-                "JoniLi99",
-                "main",
-                "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"
-            )
+            // uploadFile(
+            //     outString,
+            //     "DomainWordExtractor",
+            //     "JoniLi99",
+            //     "main",
+            //     "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"
+            // )
             console.log(outString)
             createTxtFile(outString) 
         });
     }
-    //why doesn't the order matter?
-    fr.readAsDataURL(document.getElementById('pdffile').files[0])
 
     console.log(document.getElementById('result').innerText)
     
@@ -55,7 +55,7 @@ function pdfToText(data, callbackPageDone, callbackAllDone) {
     loadingTask.promise.then(function (pdf) {
 
         const num_pages = pdf._pdfInfo.numPages;
-        let layers = {};
+        let layers = [];
         let num_completed_pages = 0;
 
         for (let page_index = 1; page_index <= num_pages; page_index++) {
@@ -84,8 +84,8 @@ function pdfToText(data, callbackPageDone, callbackAllDone) {
                     }
                     // Only call callback once all pages have been completely parsed
                     ++num_completed_pages;
-                    if (num_completed_pages == num_pages) {
-                        window.setTimeout(function () {
+                    if (num_completed_pages == num_pages && callbackAllDone) {
+                        setTimeout(function () {
                             let full_text = "";
                             for (const layer of layers)
                                 full_text += layer;
