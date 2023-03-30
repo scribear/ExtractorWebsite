@@ -20,19 +20,6 @@ function convert() {
             console.log(display_text)
             document.getElementById('result').innerText = display_text;
             
-            // let tempString = "";
-            // for (const token of entire_text) {
-            //     if (!isNumber(token)) {
-            //         tempString += token
-            //     } else {
-            //         //console.log(tempString)
-            //         if (tempString.length > 2) {
-            //             setWords.add(tempString.trim())
-            //             tempString = "";
-            //         }
-            //     }
-            // }
-            
             const outString = JSON.stringify(Array.from(setWords));
             uploadFile(
                 outString,
@@ -74,13 +61,13 @@ function textContentToWords(textContent) {
         return []
     }
     let words = []
-    // We assume here that an entry in the index has the format 'word, page number'
-    // space separated words containing only latin character and ' - ( )
-    const word_regex = new RegExp(/(\s*([^\d\s\W]|['-\(\)])+\s*)+/)
+    // Legal characters: latin letters, greek letters, ', -, ()
+    // Phrases are space separated strings of legal characters
+    const word_regex = /(\s*([^\d\s\W]|[α-ωΑ-Ω\'\-\(\)])+\s*)+/
     // a pair of brackets and arbitray string in between them
-    const brackets_regex = new RegExp(/\(.*?\)/g)
+    const brackets_regex = /\(.*?\)/g
     // 1+ contiguous spaces
-    const spaces_regex = new RegExp(/\s+/g)
+    const spaces_regex = /\s+/g
     for (const text_block of textContent.items) {
         const text = text_block.str
         if (text.search(word_regex) == -1) {
@@ -96,20 +83,6 @@ function textContentToWords(textContent) {
     debug1 = words
     debug2 = textContent.items.map(item => item.str)
     return words
-    // let page_text = "";
-    // let last_block = null;
-    // for (const text_block of textContent.items) {
-    //     if (last_block != null && last_block.str[last_block.str.length - 1] != ' ') {
-    //         if (text_block.x < last_block.x)
-    //             page_text += "\r\n";
-    //         else if (last_block.y != text_block.y && (last_block.str.match(/^(\s?[a-zA-Z])$|^(.+\s[a-zA-Z])$/) == null))
-    //             page_text += ' ';
-    //     }
-    //     page_text += text_block.str;
-    //     last_block = text_block;
-    // }
-
-    // return page_text + "\n";
 }
 
 function pdfToWords(data, callbackPageDone, callbackAllDone) {
@@ -143,61 +116,6 @@ function pdfToWords(data, callbackPageDone, callbackAllDone) {
         } // of for
     });
 };
-
-function Pdf2TextClass() {
-    let self = this;
-    this.complete = 0;
-
-    this.pdfToText = function (data, callbackPageDone, callbackAllDone) {
-        console.assert(data instanceof ArrayBuffer || typeof data == 'string');
-
-        let loadingTask = pdfjsLib.getDocument(data);
-        loadingTask.promise.then(function (pdf) {
-
-            const num_pages = pdf._pdfInfo.numPages;
-            let layers = {};
-            let num_completed_pages = 0;
-
-            for (let page_index = 1; page_index <= num_pages; page_index++) {
-                pdf.getPage(page_index).then(function (page) {
-                    const n = page.pageNumber; // Shouldn't i and n be equal?
-                    if (page_index != n) console.log("Page number i and n not equal!")
-                    
-                    page.getTextContent().then(function (textContent) {
-                        //console.log(textContent.items[0]);0
-                        if (textContent.items) {
-                            let page_text = "";
-                            let last_block = null;
-                            for (const text_block of textContent.items) {
-                                if (last_block != null && last_block.str[last_block.str.length - 1] != ' ') {
-                                    if (text_block.x < last_block.x)
-                                        page_text += "\r\n";
-                                    else if (last_block.y != text_block.y && (last_block.str.match(/^(\s?[a-zA-Z])$|^(.+\s[a-zA-Z])$/) == null))
-                                        page_text += ' ';
-                                }
-                                page_text += text_block.str;
-                                last_block = text_block;
-                            }
-
-                            console.log("page " + page_index + " finished."); //" content: \n" + page_text);
-                            layers[page_index] = page_text + "\n";
-                        }
-                        // Only call callback once all pages have been completely parsed
-                        ++num_completed_pages;
-                        if (num_completed_pages == num_pages) {
-                            window.setTimeout(function () {
-                                let full_text = "";
-                                for (const layer of layers)
-                                    full_text += layer;
-                                callbackAllDone(full_text);
-                            }, 1000);
-                        }
-                    }); // end  of page.getTextContent().then
-                }); // end of page.then
-            } // of for
-        });
-    }; // end of pdfToText()
-}; // end of class
 
 function createTxtFile(text) {
     const className = document.getElementById("classname").value;
