@@ -5,14 +5,26 @@
         <script src="https://npmcdn.com/pdfjs-dist/build/pdf.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-        <script src="parser.js"></script>
     </head>
-    Input class name (i.e. CS225)
-    <input id="classname" name = "classname" type="string"/>
+    Input Class Name (i.e. CS225) 
+    <input id="classname" name = "classname" type="string" size="30"/>
     <br>
+    GitHub Owner 
+    <input id="owner" name = "owner" type="string" size="20"/>
+    <br>
+    Repository 
+    <input id="repository" name = "repository" type="string" size="30"/>
+    <br>
+    Branch 
+    <input id="branch" name = "branch" type="string" size="15"/>
+    <br>
+    GitHub Token 
+    <input id="token" name = "token" type="string" size="50"/>
+    <br><br>
     <body>
-        <input id="pdfFile" name="pdfFile" type="file" />
+        <input id="pdfFile" name="pdfFile" type="file" /><br><br>
         <button id="btn" onclick="convert()">Process</button>
         <div id="result"></div>
+        <script src="parser.js"></script>
     </body>
 </html>

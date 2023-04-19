@@ -8,6 +8,11 @@ function isNumber(char) {
 }
 
 function convert() {
+    const owner = document.getElementById("owner").value;
+    const repository = document.getElementById("repository").value;
+    const branch = document.getElementById("branch").value;
+    const token = document.getElementById("token").value;
+
     let fr = new FileReader();
     console.debug("Start converting...")
 
@@ -23,10 +28,14 @@ function convert() {
             const outString = JSON.stringify(Array.from(setWords));
             uploadFile(
                 outString,
-                "DomainWordExtractor",
-                "JoniLi99",
-                "main",
-                "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"
+                // "DomainWordExtractor",
+                repository,
+                // "JoniLi99",
+                owner,
+                // "main",
+                branch,
+                // "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"
+                token
             )
             console.log(outString)
             createTxtFile(outString) 
@@ -63,7 +72,8 @@ function textContentToWords(textContent) {
     let words = []
     // Legal characters: latin letters, greek letters, ', -, ()
     // Phrases are space separated strings of legal characters
-    const word_regex = /(\s*([^\d\s\W]|[α-ωΑ-Ω\'\-\(\)])+\s*)+/
+    // const word_regex = /(\s*([^\d\s\W]|[α-ωΑ-Ω\'\-\(\)])+\s*)+/
+    const word_regex = /(\s*([^\d\s\W]|[\u03B1-\u03C9\u0391-\u03A9\'\-\(\)])+\s*)+/;
     // a pair of brackets and arbitray string in between them
     const brackets_regex = /\(.*?\)/g
     // 1+ contiguous spaces
@@ -125,7 +135,8 @@ function createTxtFile(text) {
 }
 
 async function uploadFile(content, repo, owner, branch, token) {
-    
+    const className = document.getElementById("classname").value;
+    const classFile =  className + ".txt";
     // Encode the contents of the file as a base64 string
     // const encodedContent = Buffer.from(content).toString("base64");
     console.log("isaac", content)
@@ -144,7 +155,8 @@ async function uploadFile(content, repo, owner, branch, token) {
         base_tree: latestCommitSha,
         tree: [
             {
-            path: "Joni.txt",
+            // path: "Joni99.txt",
+            path: classFile,
             mode: "100644",
             type: "blob",
             content: content
