@@ -42,7 +42,7 @@ async function processPdfFile() {
     }
 
     const display_text = Array.from(setWords).sort().join("\n");
-    console.log(display_text);
+    // console.log(display_text);
     sessionStorage.setItem('pdfContent', display_text);
 }
 
@@ -107,25 +107,25 @@ async function populateTextareas() {
     pdfToWords(pdfArrayBuffer, () => {}, (words) => { 
         words.map(word => setWords.add(word))
         const display_text = Array.from(setWords).sort().join("\n")
-        console.log(display_text)
-        document.getElementById('result').innerText = display_text;
+        // console.log(display_text)
+        // document.getElementById('result').innerText = display_text;
         // Update the 'merge' textarea with the words from the PDF file
         document.getElementById('merge').value = display_text;
         document.getElementById('merge').readOnly = false;
-        const outString = JSON.stringify(Array.from(setWords));
-        uploadFile(
-            outString,
-            // "DomainWordExtractor",
-            repository,
-            // "JoniLi99",
-            owner,
-            // "main",
-            branch,
-            // "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"
-            token
-        ).then(() => {
-            console.log(outString);
-        });
+        // const outString = JSON.stringify(Array.from(setWords));
+        // uploadFile(
+        //     outString,
+        //     // "DomainWordExtractor",
+        //     repository,
+        //     // "JoniLi99",
+        //     owner,
+        //     // "main",
+        //     branch,
+        //     // "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"
+        //     token
+        // ).then(() => {
+        //     console.log(outString);
+        // });
     });
 }
 
@@ -175,15 +175,23 @@ async function convert() {
 
     pdfToWords(pdfArrayBuffer, () => {}, (words) => { 
         words.map(word => setWords.add(word))
-        const display_text = Array.from(setWords).sort().join("\n")
-        console.log(display_text)
-        document.getElementById('result').innerText = display_text;
+        // const display_text = Array.from(setWords).sort().join("\n")
+        // console.log(display_text)
+        // document.getElementById('result').innerText = display_text;
 
         // Update the 'merge' textarea with the words from the PDF file
-        document.getElementById('merge').value = display_text;
-        document.getElementById('merge').readOnly = false;
+        // document.getElementById('merge').value = display_text;
+        // document.getElementById('merge').readOnly = false;
+        const existingContent = sessionStorage.getItem('existingContent');
+        let existingContent_arr = existingContent.split('\n');
+        existingContent_arr.map(word => setWords.add(word));
         
-        const outString = JSON.stringify(Array.from(setWords));
+        let outString = JSON.stringify(Array.from(setWords).map((word) => {
+            return word.charAt(0).toUpperCase() + word.slice(1);
+            
+        }).sort());
+        outString = outString.replace(/[\[\]"]/g, "");
+        outString = outString.replace(/,/g, "\n");
         uploadFile(
             outString,
             // "DomainWordExtractor",
@@ -195,7 +203,7 @@ async function convert() {
             // "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"
             token
         ).then(() => {
-            console.log(outString);
+            // console.log(outString);
             createTxtFile(outString);
             window.location.href = 'parser.html';
         });
@@ -203,7 +211,7 @@ async function convert() {
 
     // Inside the convert() function, after converting the PDF to words:
     const display_text = Array.from(setWords).sort().join("\n");
-    console.log(display_text);
+    // console.log(display_text);
     sessionStorage.setItem('pdfContent', display_text);
 
     // // fr.readAsDataURL(document.getElementById('pdfFile').files[0])
@@ -382,7 +390,7 @@ async function uploadFile(content, repo, owner, branch, token) {
     const classFile =  className + ".txt";
     // Encode the contents of the file as a base64 string
     // const encodedContent = Buffer.from(content).toString("base64");
-    console.log("isaac", content)
+    // console.log("isaac", content)
 
     // Get the SHA of the latest commit on the branch
     const latestCommitResponse = await axios.get(

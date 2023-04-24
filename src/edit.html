@@ -5,15 +5,8 @@
         <script src="https://npmcdn.com/pdfjs-dist/build/pdf.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+        <link rel="stylesheet" href="edit.css">
     </head>
-    <div>
-        <h4>Already on GitHub: </h4>
-        <textarea id="exist" name="exist" rows="200" cols="60" readonly></textarea>
-    </div>
-    <div>
-        <h4>Merge wordlist to GitHub (editable): </h4>
-        <textarea id="merge" name="merge" rows="200" cols="60" readonly></textarea>
-    </div>
     <!-- Already on GitHub: <br>
     <textarea id="exist" name="exist" rows="200" cols="60"></textarea>
     <br>
@@ -21,8 +14,20 @@
     <textarea id="merge" name="merge" rows="200" cols="60"></textarea>
     <br> -->
     <body onload="populateTextareas()">
-        <button id="btn" onclick="convert()">Confirm Upload</button>
-        <div id="result"></div>
+        <div class="container">
+            <div class="left">
+                <h2>Already on GitHub: </h2>
+                <textarea id="exist" name="exist" rows="200" cols="60" readonly></textarea>
+            </div>
+            <div class="right">
+                <h2>Merge wordlist to GitHub (editable): </h2>
+                <textarea id="merge" name="merge" rows="200" cols="60" readonly></textarea>
+            </div>
+        </div>
+        <div class="btn-container">
+            <button id="btn" onclick="convert()">Confirm Upload</button>
+        </div>
+        <!-- <div id="result"></div> -->
         <script src="edit.js"></script>
     </body>
 </html>
