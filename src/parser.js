@@ -216,7 +216,6 @@ async function uploadFile(content, repo, owner, branch, token) {
     const classFile =  className + ".txt";
     // Encode the contents of the file as a base64 string
     // const encodedContent = Buffer.from(content).toString("base64");
-    console.log("isaac", content)
 
     // Get the SHA of the latest commit on the branch
     const latestCommitResponse = await axios.get(

@@ -7,6 +7,8 @@ function isNumber(char) {
     return /^\d$/.test(char);
 }
 
+let display_text = "";
+
 //  Testing
 // function getPassedValues() {
 //     const classname = sessionStorage.getItem('classname');
@@ -21,30 +23,30 @@ function isNumber(char) {
 
 // getPassedValues();
 //
-async function processPdfFile() {
-    const pdfFile = sessionStorage.getItem('pdfFile');
+// async function processPdfFile() {
+//     const pdfFile = sessionStorage.getItem('pdfFile');
     
-    if (!pdfFile) {
-        return;
-    }
+//     if (!pdfFile) {
+//         return;
+//     }
     
-    const pdfBytes = Uint8Array.from(atob(pdfFile), c => c.charCodeAt(0));
-    const pdfDoc = await pdfjsLib.getDocument({data: pdfBytes}).promise;
+//     const pdfBytes = Uint8Array.from(atob(pdfFile), c => c.charCodeAt(0));
+//     const pdfDoc = await pdfjsLib.getDocument({data: pdfBytes}).promise;
 
-    const setWords = new Set();
+//     const setWords = new Set();
     
-    for (let pageNum = 1; pageNum <= pdfDoc.numPages; pageNum++) {
-        const page = await pdfDoc.getPage(pageNum);
-        const content = await page.getTextContent();
-        const strings = content.items.map(item => item.str);
+//     for (let pageNum = 1; pageNum <= pdfDoc.numPages; pageNum++) {
+//         const page = await pdfDoc.getPage(pageNum);
+//         const content = await page.getTextContent();
+//         const strings = content.items.map(item => item.str);
 
-        strings.forEach(word => setWords.add(word));
-    }
+//         strings.forEach(word => setWords.add(word));
+//     }
 
-    const display_text = Array.from(setWords).sort().join("\n");
-    // console.log(display_text);
-    sessionStorage.setItem('pdfContent', display_text);
-}
+//     const display_text = Array.from(setWords).sort().join("\n");
+//     // console.log(display_text);
+//     sessionStorage.setItem('pdfContent', display_text);
+// }
 
 
 // Check if the file exists in the GitHub repository
@@ -105,8 +107,33 @@ async function populateTextareas() {
     const pdfArrayBuffer = bytes.buffer;
     console.debug("Start converting...")
     pdfToWords(pdfArrayBuffer, () => {}, (words) => { 
-        words.map(word => setWords.add(word))
-        const display_text = Array.from(setWords).sort().join("\n")
+        words
+        .filter(word => word.length > 1)
+        .map(word => setWords.add(word.charAt(0).toUpperCase() + word.slice(1)))
+        // const display_text = Array.from(setWords).sort().join("\n")
+        // console.log(display_text)
+        // document.getElementById('result').innerText = display_text;
+
+        // Update the 'merge' textarea with the words from the PDF file
+        // document.getElementById('merge').value = display_text;
+        // document.getElementById('merge').readOnly = false;
+        const existingContent = sessionStorage.getItem('existingContent');
+        let existingContent_arr = existingContent.split('\n');
+        existingContent_arr.map(word => setWords.add(word));
+        
+        // display_text = JSON.stringify(Array.from(setWords).map((word) => {
+        //     if (word.length === 1) {
+        //         return "";
+        //     }
+        //     else {
+        //         return word.charAt(0).toUpperCase() + word.slice(1);
+        //     }
+        // }).sort());
+        display_text = Array.from(setWords).filter(word => word.length > 1).sort().join("\n")
+        display_text = display_text.replace(/[\[\]"]/g, "");
+        display_text = display_text.replace(/,/g, "\n");
+        // words.map(word => setWords.add(word))
+        // const display_text = Array.from(setWords).filter(word => word.length > 1).sort().join("\n")
         // console.log(display_text)
         // document.getElementById('result').innerText = display_text;
         // Update the 'merge' textarea with the words from the PDF file
@@ -134,10 +161,6 @@ async function convert() {
     const repository = sessionStorage.getItem('repository');
     const branch = sessionStorage.getItem('branch');
     const token = sessionStorage.getItem('token');
-    // const owner = document.getElementById("owner").value;
-    // const repository = document.getElementById("repository").value;
-    // const branch = document.getElementById("branch").value;
-    // const token = document.getElementById("token").value;
     const pdfFileBase64 = sessionStorage.getItem('pdfFile');
 
     // const className = sessionStorage.getItem('classname');
@@ -163,56 +186,73 @@ async function convert() {
     // }
     
     // Convert Base64 to ArrayBuffer
-    const binaryString = atob(pdfFileBase64.split(',')[1]);
-    const len = binaryString.length;
-    const bytes = new Uint8Array(len);
-    for (let i = 0; i < len; i++) {
-        bytes[i] = binaryString.charCodeAt(i);
-    }
-    const pdfArrayBuffer = bytes.buffer;
+    // const binaryString = atob(pdfFileBase64.split(',')[1]);
+    // const len = binaryString.length;
+    // const bytes = new Uint8Array(len);
+    // for (let i = 0; i < len; i++) {
+    //     bytes[i] = binaryString.charCodeAt(i);
+    // }
+    // const pdfArrayBuffer = bytes.buffer;
 
-    console.debug("Start converting...")
-
-    pdfToWords(pdfArrayBuffer, () => {}, (words) => { 
-        words.map(word => setWords.add(word))
-        // const display_text = Array.from(setWords).sort().join("\n")
-        // console.log(display_text)
-        // document.getElementById('result').innerText = display_text;
-
-        // Update the 'merge' textarea with the words from the PDF file
-        // document.getElementById('merge').value = display_text;
-        // document.getElementById('merge').readOnly = false;
-        const existingContent = sessionStorage.getItem('existingContent');
-        let existingContent_arr = existingContent.split('\n');
-        existingContent_arr.map(word => setWords.add(word));
-        
-        let outString = JSON.stringify(Array.from(setWords).map((word) => {
-            return word.charAt(0).toUpperCase() + word.slice(1);
-            
-        }).sort());
-        outString = outString.replace(/[\[\]"]/g, "");
-        outString = outString.replace(/,/g, "\n");
-        uploadFile(
-            outString,
-            // "DomainWordExtractor",
-            repository,
-            // "JoniLi99",
-            owner,
-            // "main",
-            branch,
-            // "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"
-            token
-        ).then(() => {
-            // console.log(outString);
-            createTxtFile(outString);
-            window.location.href = 'parser.html';
-        });
+    // console.debug("Start converting...")
+    uploadFile(
+        display_text,
+        // "DomainWordExtractor",
+        repository,
+        // "JoniLi99",
+        owner,
+        // "main",
+        branch,
+        // "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"
+        token
+    ).then(() => {
+        createTxtFile(display_text);
+        window.location.href = 'parser.html';
     });
+    // pdfToWords(pdfArrayBuffer, () => {}, (words) => { 
+    //     words.map(word => setWords.add(word))
+    //     // const display_text = Array.from(setWords).sort().join("\n")
+    //     // console.log(display_text)
+    //     // document.getElementById('result').innerText = display_text;
+
+    //     // Update the 'merge' textarea with the words from the PDF file
+    //     // document.getElementById('merge').value = display_text;
+    //     // document.getElementById('merge').readOnly = false;
+    //     const existingContent = sessionStorage.getItem('existingContent');
+    //     let existingContent_arr = existingContent.split('\n');
+    //     existingContent_arr.map(word => setWords.add(word));
+        
+    //     let outString = JSON.stringify(Array.from(setWords).map((word) => {
+    //         if (word.length === 1) {
+    //             return "";
+    //         }
+    //         else {
+    //             return word.charAt(0).toUpperCase() + word.slice(1);
+    //         }
+    //     }).sort());
+    //     outString = outString.replace(/[\[\]"]/g, "");
+    //     outString = outString.replace(/,/g, "\n");
+    //     uploadFile(
+    //         outString,
+    //         // "DomainWordExtractor",
+    //         repository,
+    //         // "JoniLi99",
+    //         owner,
+    //         // "main",
+    //         branch,
+    //         // "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"
+    //         token
+    //     ).then(() => {
+    //         // console.log(outString);
+    //         createTxtFile(outString);
+    //         window.location.href = 'parser.html';
+    //     });
+    // });
 
     // Inside the convert() function, after converting the PDF to words:
-    const display_text = Array.from(setWords).sort().join("\n");
+    // const display_text = Array.from(setWords).sort().join("\n");
     // console.log(display_text);
-    sessionStorage.setItem('pdfContent', display_text);
+    // sessionStorage.setItem('pdfContent', display_text);
 
     // // fr.readAsDataURL(document.getElementById('pdfFile').files[0])
     // fr.onload = function(){ // this function is executed asynchronously when the pdf file has been loaded 
