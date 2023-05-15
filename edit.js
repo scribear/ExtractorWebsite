@@ -207,7 +207,7 @@ async function convert() {
         token
     ).then(() => {
         createTxtFile(display_text);
-        window.location.href = 'parser.html';
+        window.location.href = 'index.html';
     });
     // pdfToWords(pdfArrayBuffer, () => {}, (words) => { 
     //     words.map(word => setWords.add(word))
@@ -245,7 +245,7 @@ async function convert() {
     //     ).then(() => {
     //         // console.log(outString);
     //         createTxtFile(outString);
-    //         window.location.href = 'parser.html';
+    //         window.location.href = 'index.html';
     //     });
     // });
 
@@ -279,7 +279,7 @@ async function convert() {
     //         createTxtFile(outString) 
     //     });
     // }
-    // window.location.href = 'parser.html';
+    // window.location.href = 'index.html';
 }
 
 /**
