@@ -208,7 +208,7 @@ async function convert() {
     ).then(() => {
         createTxtFile(display_text);
         // window.location.href = 'index.html';
-        window.location.href = '/';
+        window.location.href = 'http://scribear.illinois.edu/ExtractorWebsite/';
     });
     // pdfToWords(pdfArrayBuffer, () => {}, (words) => { 
     //     words.map(word => setWords.add(word))
