@@ -207,7 +207,8 @@ async function convert() {
         token
     ).then(() => {
         createTxtFile(display_text);
-        window.location.href = 'index.html';
+        // window.location.href = 'index.html';
+        window.location.href = '/';
     });
     // pdfToWords(pdfArrayBuffer, () => {}, (words) => { 
     //     words.map(word => setWords.add(word))
