@@ -162,6 +162,7 @@ async function convert() {
     const branch = sessionStorage.getItem('branch');
     const token = sessionStorage.getItem('token');
     const pdfFileBase64 = sessionStorage.getItem('pdfFile');
+    const uploaded_text = document.getElementById("merge").value;
 
     // const className = sessionStorage.getItem('classname');
     // const classFile = className + ".txt";
@@ -196,7 +197,8 @@ async function convert() {
 
     // console.debug("Start converting...")
     uploadFile(
-        display_text,
+        // display_text,
+        uploaded_text,
         // "DomainWordExtractor",
         repository,
         // "JoniLi99",
@@ -206,7 +208,7 @@ async function convert() {
         // "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"
         token
     ).then(() => {
-        createTxtFile(display_text);
+        createTxtFile(uploaded_text);
         // window.location.href = 'index.html';
         window.location.href = 'http://scribear.illinois.edu/ExtractorWebsite/';
     });
