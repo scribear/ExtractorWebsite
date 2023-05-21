@@ -120,6 +120,22 @@ async function convert() {
     // }
 }
 
+async function download() {
+    const owner = document.getElementById("owner").value;
+    const repository = document.getElementById("repository").value;
+    const branch = document.getElementById("branch").value;
+    const token = document.getElementById("token").value;
+    const className = document.getElementById('classname').value;
+    const classFile = className + ".txt";
+    const fileExists = await checkFileExists(classFile, repository, owner, branch, token);
+    if (fileExists) {
+        const existingContent = await getFileContent(classFile, repository, owner, branch, token);
+        createTxtFile(existingContent);
+    } else {
+        console.log("File does not exist!")
+    }
+}
+
 /**
  * Structure of textContent:
  * {
