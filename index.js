@@ -136,6 +136,12 @@ async function download() {
     }
 }
 
+async function review_instructions() {
+    var link = document.createElement('a');
+    link.href = 'Brief Instructions of ScribeAR Domain Word Extractor.pdf';
+    link.download = 'Brief Instructions of ScribeAR Domain Word Extractor.pdf';
+    link.click();
+}
 /**
  * Structure of textContent:
  * {
