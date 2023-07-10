@@ -5,24 +5,44 @@
         <script src="https://npmcdn.com/pdfjs-dist/build/pdf.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+        <link rel="stylesheet" href="index.css">
     </head>
-    Input Class Name (i.e. CS225) 
-    <input id="classname" name = "classname" type="string" size="30"/>
-    <br>
-    GitHub Owner 
-    <input id="owner" name = "owner" type="string" size="20"/>
-    <br>
-    Repository 
-    <input id="repository" name = "repository" type="string" size="30"/>
-    <br>
-    Branch 
-    <input id="branch" name = "branch" type="string" size="15"/>
-    <br>
-    GitHub Token 
-    <input id="token" name = "token" type="string" size="50"/>
-    <br><br>
+
     <body>
-        <input id="pdfFile" name="pdfFile" type="file" /><br><br>
+        <h1>Domain Word Extractor</h1>
+        <h2>Processing to Github</h2>
+    
+        <div class="input-container">
+            <label for="classname">Input Class Name</label>
+            <br>
+            <input id="classname" name="classname" type="string" value="e.g. CS225" size="30"/>
+        </div>
+
+        <div class="input-container">
+            <label for="owner">GitHub Owner</label>
+            <br>
+            <input id="owner" name="owner" type="string" size="30"/>
+        </div>
+
+        <div class="input-container">
+            <label for="repository">Repository</label>
+            <br>
+            <input id="repository" name="repository" type="string" size="30"/>
+        </div>
+
+        <div class="input-container">
+            <label for="branch">Branch</label>
+            <br>
+            <input id="branch" name="branch" type="string" size="30"/>
+        </div>
+
+        <div class="input-container">
+            <label for="token">GitHub Token</label>
+            <br>
+            <input id="token" name="token" type="string" size="50"/>
+            <input id="pdfFile" name="pdfFile" type="file" /><br><br>
+        </div>
+
         <button id="btn" onclick="convert()">Process</button>
         <div id="result"></div>
         <h2>Download the transcript from GitHub</h2>
